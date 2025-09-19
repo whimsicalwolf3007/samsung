@@ -10,7 +10,7 @@ import ThemeToggleButton from '../components/ThemeToggleButton';
 import {
   Home, BarChart, GraduationCap, MessageSquare, Bell, Calendar, Folder,
   MessageCircle, Zap, Rocket, Key, Crown, BookOpen, Users as UsersIcon,
-  Award, RefreshCcw, Lightbulb, Briefcase, PlusCircle, Bot, Users,
+  Award, RefreshCcw, Lightbulb, Briefcase, PlusCircle, Bot, Users, LayoutGrid, Columns
 } from "lucide-react";
 
 import SidebarItem from "../components/SidebarItem";
@@ -35,6 +35,7 @@ export default function Dashboard() {
   const [isInternModalOpen, setIsInternModalOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [currentUserLevel, setCurrentUserLevel] = useState(1);
+  const [layout, setLayout] = useState('grid'); // State for layout: 'grid' or 'horizontal'
 
   const workletsData = [
     {
@@ -157,7 +158,7 @@ export default function Dashboard() {
       {/* Left Sidebar */}
       <aside className="w-30 lg:w-30 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black flex flex-col py-2 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <nav className="flex flex-col gap-6 items-center lg:items-center">
-          <SidebarItem icon={<Home className="w-5 h-5" />} label="Home" onClick={() => handleSidebarNavigation("/")} />
+          <SidebarItem icon={<Home className="w-5 h-5" />} label="Home" onClick={() => handleSidebarNavigation("/home")} />
           <SidebarItem icon={<BarChart className="w-5 h-5" />} label="Statistics" onClick={() => handleSidebarNavigation("/statistics")} />
           <SidebarItem icon={<GraduationCap className="w-5 h-5" />} label="Colleges" onClick={() => handleSidebarNavigation("/colleges")} />
           <SidebarItem icon={<MessageSquare className="w-5 h-5" />} label="Chats" onClick={() => handleSidebarNavigation("/chats")} />
@@ -245,44 +246,63 @@ export default function Dashboard() {
         {/* Stats */}
 <div className="mt-6 flex gap-4 flex-wrap">
   <div className="transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
-    <StatCard
-      value={STATS.worklets}
-      label="Worklets"
-      icon={<BookOpen className="w-5 h-5" />}
-      accent="from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 dark:from-slate-800 dark:to-slate-800/50"
-    />
+    <div
+      className="transform transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
+      onClick={() => handleNavigation('/worklets')}>
+      <StatCard
+        value={STATS.worklets}
+        label="Worklets"
+        icon={<BookOpen className="w-5 h-5" />}
+        accent="from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 dark:from-gray-800 dark:to-gray-800/50 dark:hover:from-gray-700 dark:hover:to-gray-700/50 transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+      />
+    </div>
   </div>
   <div className="transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
     <StatCard
       value={STATS.mentees}
       label="Mentees"
       icon={<UsersIcon className="w-5 h-5" />}
-      accent="from-indigo-50 to-white hover:from-indigo-100 hover:to-indigo-50 dark:from-slate-800 dark:to-slate-800/50"
-    />
-  </div>
-  <div className="transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
-    <StatCard
-      value={STATS.badges}
-      label="Badges"
-      icon={<Award className="w-5 h-5" />}
-      accent="from-purple-50 to-white hover:from-purple-100 hover:to-purple-50 dark:from-slate-800 dark:to-slate-800/50"
+      accent="from-indigo-50 to-white hover:from-indigo-100 hover:to-indigo-50 dark:from-gray-800 dark:to-gray-800/50 dark:hover:from-gray-700 dark:hover:to-gray-700/50"
     />
   </div>
 </div>
-        
-        {/* My Worklets */}
+       {/* My Worklets */}
         <div className="mt-10">
-          <h2 className="text-2xl font-bold mb-4 text-blue-900 dark:text-white">My Worklets</h2>
-          <div className="flex overflow-x-auto gap-8 pb-4 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-blue-300 [&::-webkit-scrollbar-thumb]:rounded-full dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-blue-500">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold bg-blue-900 animate-shimmer">My Worklets</h2>
+            <div className="flex items-center gap-1 p-1 bg-gray-200 rounded-lg">
+              <button
+                onClick={() => setLayout('grid')}
+                className={`p-1.5 rounded-md transition-colors ${
+                  layout === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800'
+                }`}
+                aria-label="Grid View">
+                <LayoutGrid size={20} />
+              </button>
+              <button
+                onClick={() => setLayout('horizontal')}
+                className={`p-1.5 rounded-md transition-colors ${
+                  layout === 'horizontal' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800'
+                }`}
+                aria-label="Horizontal View">
+                <Columns size={20} />
+              </button>
+            </div>
+          </div>
+
+          <div
+            className={
+              layout === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+                : 'flex overflow-x-auto gap-8 pb-4' // pb-4 provides space for the scrollbar
+            }>
             {workletsData.map((worklet) => (
-              <div key={worklet.id} className="flex-shrink-0 w-98 sm:w-80 md:w-96 lg:w-80"> 
-                <WorkletCard worklet={worklet} />
-              </div>
+              <WorkletCard key={worklet.id} worklet={worklet} layout={layout} />
             ))}
           </div>
         </div>
       </main>
-
+      
       {/* Right Sidebar */}
       <aside className="w-64 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black shadow-lg px-4 py-6 flex flex-col justify-between overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div>
@@ -372,10 +392,16 @@ export default function Dashboard() {
   );
 }
 
-// Reusable Worklet Card Component
-function WorkletCard({ worklet }) {
+// Reusable Worklet Card Component - Updated to handle different layouts
+function WorkletCard({ worklet, layout }) {
+  // Dynamically set classes based on the layout prop
+  const containerClasses = layout === 'grid'
+    ? 'w-full' // In grid view, card takes up the full width of its column
+    : 'w-80 flex-shrink-0'; // In horizontal view, card has a fixed width and doesn't shrink
+
   return (
-    <div className="group relative aspect-video cursor-pointer overflow-hidden rounded-2xl shadow-lg transition-all duration-500 ease-in-out hover:scale-105 ">
+    <div
+      className={`group relative aspect-video cursor-pointer overflow-hidden rounded-2xl shadow-lg transition-all duration-500 ease-in-out hover:scale-105 ${containerClasses}`}>
       {/* Background Image */}
       <img
         src={worklet.imageUrl}
@@ -389,7 +415,7 @@ function WorkletCard({ worklet }) {
       {/* Normal State Content (Fades out on hover) */}
       <div className="absolute inset-0 flex flex-col justify-end p-4 text-white transition-opacity duration-300 group-hover:opacity-0">
         <h3 className="text-lg font-bold">{worklet.title}</h3>
-        <p className="text-sm text-gray-300">{worklet.description}</p>
+        <p className="text-sm text-gray-300 line-clamp-2">{worklet.description}</p>
         <div className="mt-4">
           <div className="flex justify-between text-xs font-medium text-cyan-200">
             <span>Progress</span>
@@ -398,8 +424,7 @@ function WorkletCard({ worklet }) {
           <div className="mt-1 h-2 w-full rounded-full bg-white/20">
             <div
               className="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
-              style={{ width: `${worklet.progress}%` }}
-            ></div>
+              style={{ width: `${worklet.progress}%` }}></div>
           </div>
         </div>
       </div>
@@ -409,12 +434,16 @@ function WorkletCard({ worklet }) {
         <h3 className="text-lg font-bold">{worklet.title}</h3>
         <div className="mt-2 flex items-center gap-2 text-xs text-gray-300">
           <Calendar size={14} />
-          <span>{worklet.startDate} - {worklet.endDate}</span>
+          <span>
+            {worklet.startDate} - {worklet.endDate}
+          </span>
         </div>
-        <div className="mt-4 flex-1"> {/* flex-1 allows this div to take remaining space */}
+        <div className="mt-4 flex-1">
+          {' '}
+          {/* flex-1 allows this div to take remaining space */}
           <div className="flex items-center gap-2 font-semibold text-sm">
-              <Users size={16} />
-              <h4>Assigned Students</h4>
+            <Users size={16} />
+            <h4>Assigned Students</h4>
           </div>
           <ul className="mt-1 list-disc list-inside text-xs text-gray-200 space-y-1">
             {worklet.students.map((student) => (

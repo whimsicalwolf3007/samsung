@@ -53,7 +53,7 @@ export default function Ray() {
   ];
 
   const navItems = [
-    { icon: <Home className="w-5 h-5" />, label: 'Home', path: '/' },
+    { icon: <Home className="w-5 h-5" />, label: 'Home', path: '/home' },
     { icon: <BarChart className="w-5 h-5" />, label: 'Statistics', path: '/statistics' },
     { icon: <GraduationCap className="w-5 h-5" />, label: 'Colleges', path: '/colleges' },
     { icon: <MessageSquare className="w-5 h-5" />, label: 'Chats', path: '/chats' },

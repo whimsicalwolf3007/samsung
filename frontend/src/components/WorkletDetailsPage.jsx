@@ -18,7 +18,7 @@ import {
   Lightbulb,
   Briefcase,
   MessageSquare,
-  Bot
+  Bot, X, ClipboardCheck
 } from "lucide-react";
 
 // --- Reusable Sidebar Button Component ---
@@ -133,11 +133,7 @@ export default function WorkletDetailPage() {
             label={<span className="font-semibold">Share Suggestion</span>}
             onClick={() => setIsSuggestionModalOpen(true)}
           />
-          <ActivityButton
-            icon={<Calendar size={20} className="text-green-600 dark:text-green-400" />}
-            label={<span className="font-semibold">Schedule Meeting</span>}
-            onClick={() => handleNavigation("/schedule-meeting")}
-          />
+         
           <ActivityButton
             icon={<Briefcase size={20} className="text-purple-600 dark:text-purple-400" />}
             label={<span className="font-semibold">Internship Referral</span>}
@@ -147,6 +143,12 @@ export default function WorkletDetailPage() {
             icon={<MessageSquare size={20} className="text-indigo-600 dark:text-indigo-400" />}
             label={<span className="font-semibold">Submit Feedback</span>}
             onClick={() => setIsFeedbackOpen(true)}
+          />
+           {/* Added Evaluate button */}
+          <ActivityButton
+            icon={<ClipboardCheck className="w-5 h-10 text-green-600" />}
+            label={<span className="text-lg font-semibold">Evaluate</span>}
+            onClick={() => handleNavigation("/evaluate")}
           />
         </div>
         <div className="text-center">

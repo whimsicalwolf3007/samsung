@@ -21,7 +21,7 @@ const getInitials = (name) => {
 
 const generateColorFromName = (name) => {
   if (!name) return '#cccccc';
- const colors = ['#0077b6', '#0096c7', '#48cae4', '#90e0ef', '#ade8f4'];
+  const colors = ['#0077b6', '#0096c7', '#48cae4', '#90e0ef', '#ade8f4'];
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -31,21 +31,39 @@ const generateColorFromName = (name) => {
 
 const UserProfile = ({ userData, onProfileUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
+  // State to hold form data while editing. Initialized when editing starts.
+  const [editedData, setEditedData] = useState(null);
   const navigate = useNavigate();
 
+  // Updates the temporary state, not the parent component's state.
   const handleInputChange = (e) => {
-    onProfileUpdate(prevData => ({ ...prevData, [e.target.name]: e.target.value }));
+    setEditedData(prevData => ({ ...prevData, [e.target.name]: e.target.value }));
   };
 
-  // LOGIC PART 2: This function updates the state in App.jsx
+  // Updates the temporary avatar URL.
   const handleAvatarSelect = (url) => {
-    onProfileUpdate(prevData => ({ ...prevData, avatarUrl: url }));
+    setEditedData(prevData => ({ ...prevData, avatarUrl: url }));
   };
-  
+
+  // When "Edit" is clicked, copy current data to a temporary state for editing.
+  const handleEditClick = () => {
+    setEditedData(userData);
+    setIsEditing(true);
+  };
+
+  // On save, call the parent update function with the edited data.
   const handleSave = () => {
+    onProfileUpdate(editedData);
     setIsEditing(false);
-    navigate('/home'); 
+    setEditedData(null); // Clear temporary state
+    navigate('/home');
   };
+
+  // On cancel, simply close the modal and clear the temporary state.
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedData(null);
+  }
 
   const InitialsAvatar = ({ name }) => (
     <div className="profile-avatar initials-avatar" style={{ backgroundColor: generateColorFromName(name) }}>
@@ -57,9 +75,8 @@ const UserProfile = ({ userData, onProfileUpdate }) => {
     <div className="profile-page-container">
       <div className="dynamic-background"></div>
       <div className="profile-card">
-        <button className="edit-button" onClick={() => setIsEditing(true)}><Edit size={18} /></button>
+        <button className="edit-button" onClick={handleEditClick}><Edit size={18} /></button>
         <div className="profile-header">
-          {/* LOGIC PART 3: This checks if userData.avatarUrl is null/empty and shows initials if it is */}
           {userData.avatarUrl ? (
             <img src={userData.avatarUrl} alt="User Avatar" className="profile-avatar" />
           ) : (
@@ -77,42 +94,38 @@ const UserProfile = ({ userData, onProfileUpdate }) => {
             <div className="detail-item"><LinkIcon size={16} /><a href={userData.website} target="_blank" rel="noopener noreferrer">{userData.website}</a></div>
           </div>
         </div>
-        <div className="profile-actions">
-          <button className="btn primary">Follow</button>
-          <button className="btn secondary">Share Profile</button>
-        </div>
       </div>
 
-      {isEditing && (
+      {isEditing && editedData && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-modal-button" onClick={() => setIsEditing(false)}><X size={20} /></button>
+            <button className="close-modal-button" onClick={handleCancel}><X size={20} /></button>
             <h2>Edit Your Profile</h2>
             <form className="edit-form">
               <div className="avatar-picker full-width">
                 <label>Choose Avatar</label>
                 <div className="avatar-selection-grid">
-                  {AVATAR_OPTIONS.map(url => <img key={url} src={url} alt="Avatar option" className={`avatar-option ${userData.avatarUrl === url ? 'selected' : ''}`} onClick={() => handleAvatarSelect(url)} />)}
-                  {/* LOGIC PART 1: This button sets the avatar URL to null */}
+                  {AVATAR_OPTIONS.map(url => <img key={url} src={url} alt="Avatar option" className={`avatar-option ${editedData.avatarUrl === url ? 'selected' : ''}`} onClick={() => handleAvatarSelect(url)} />)}
                   <button
                     type="button"
-                    className={`avatar-option remove-photo ${!userData.avatarUrl ? 'selected' : ''}`}
+                    className={`avatar-option remove-photo ${!editedData.avatarUrl ? 'selected' : ''}`}
                     onClick={() => handleAvatarSelect(null)}
                   >
                     <ImageOff size={24} />
                   </button>
                 </div>
               </div>
-              <div className="form-group"><label>Name</label><input type="text" name="name" value={userData.name} onChange={handleInputChange} /></div>
-              <div className="form-group"><label>Handle</label><input type="text" name="handle" value={userData.handle} onChange={handleInputChange} /></div>
-              <div className="form-group"><label>Qualification</label><input type="text" name="qualification" value={userData.qualification} onChange={handleInputChange} /></div>
-              <div className="form-group"><label>Location</label><input type="text" name="location" value={userData.location} onChange={handleInputChange} /></div>
-              <div className="form-group"><label>Date of Birth</label><input type="date" name="dob" value={userData.dob} onChange={handleInputChange} /></div>
-              <div className="form-group"><label>Website</label><input type="url" name="website" value={userData.website} onChange={handleInputChange} /></div>
-              <div className="form-group full-width"><label>Bio</label><textarea name="bio" value={userData.bio} onChange={handleInputChange}></textarea></div>
+              {/* Form inputs now read from and write to the temporary 'editedData' state */}
+              <div className="form-group"><label>Name</label><input type="text" name="name" value={editedData.name} onChange={handleInputChange} /></div>
+              <div className="form-group"><label>Handle</label><input type="text" name="handle" value={editedData.handle} onChange={handleInputChange} /></div>
+              <div className="form-group"><label>Qualification</label><input type="text" name="qualification" value={editedData.qualification} onChange={handleInputChange} /></div>
+              <div className="form-group"><label>Location</label><input type="text" name="location" value={editedData.location} onChange={handleInputChange} /></div>
+              <div className="form-group"><label>Date of Birth</label><input type="date" name="dob" value={editedData.dob} onChange={handleInputChange} /></div>
+              <div className="form-group"><label>Website</label><input type="url" name="website" value={editedData.website} onChange={handleInputChange} /></div>
+              <div className="form-group full-width"><label>Bio</label><textarea name="bio" value={editedData.bio} onChange={handleInputChange}></textarea></div>
             </form>
             <div className="modal-actions">
-              <button className="btn secondary" onClick={() => setIsEditing(false)}>Cancel</button>
+              <button className="btn secondary" onClick={handleCancel}>Cancel</button>
               <button className="btn primary" onClick={handleSave}>Save Changes</button>
             </div>
           </div>

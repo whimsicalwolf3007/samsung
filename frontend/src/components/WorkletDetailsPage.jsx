@@ -7,6 +7,8 @@ import RequestUpdate from "../layouts/Requestupdates";
 import SuggestionModal from "../layouts/SuggestionModal";
 import InternReferralForm from "../layouts/Intern";
 import FeedBack from "../layouts/FeedBack";
+import RightSidebar from  "../components/Right";
+import LeftSidebar from "../components/Left";
 
 // --- Import all required icons from lucide-react ---
 import {
@@ -67,6 +69,7 @@ export default function WorkletDetailPage() {
   // --- RENDER ---
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-gray-900">
+      <LeftSidebar />
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
         <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
@@ -113,61 +116,7 @@ export default function WorkletDetailPage() {
       </main>
 
       {/* Right Sidebar */}
-      <aside className="w-72 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black shadow-lg px-4 py-6 flex flex-col justify-between overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div>
-          <button
-            className="w-full bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded-xl py-2 mb-4 flex items-center justify-center gap-2 text-xl dark:bg-blue-900/50 dark:hover:bg-blue-800/60 dark:text-blue-200"
-            onClick={() => handleNavigation("/new-worklet")}
-          >
-            <PlusCircle size={24} /> <span>New Worklet</span>
-          </button>
-          <h2 className="text-xl font-bold mb-2 text-blue-900 dark:text-white px-2">Activities</h2>
-
-          <ActivityButton
-            icon={<RefreshCcw size={20} className="text-blue-600 dark:text-blue-400" />}
-            label={<span className="font-semibold">Request Update</span>}
-            onClick={() => setIsRequestUpdateOpen(true)}
-          />
-          <ActivityButton
-            icon={<Lightbulb size={20} className="text-sky-500 dark:text-sky-400" />}
-            label={<span className="font-semibold">Share Suggestion</span>}
-            onClick={() => setIsSuggestionModalOpen(true)}
-          />
-         
-          <ActivityButton
-            icon={<Briefcase size={20} className="text-purple-600 dark:text-purple-400" />}
-            label={<span className="font-semibold">Internship Referral</span>}
-            onClick={() => setIsInternModalOpen(true)}
-          />
-          <ActivityButton
-            icon={<MessageSquare size={20} className="text-indigo-600 dark:text-indigo-400" />}
-            label={<span className="font-semibold">Submit Feedback</span>}
-            onClick={() => setIsFeedbackOpen(true)}
-          />
-           {/* Added Evaluate button */}
-          <ActivityButton
-            icon={<ClipboardCheck className="w-5 h-10 text-green-600" />}
-            label={<span className="text-lg font-semibold">Evaluate</span>}
-            onClick={() => handleNavigation("/evaluate")}
-          />
-        </div>
-        <div className="text-center">
-          <button
-            onClick={() => handleNavigation("/ray")}
-            className="group relative mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-blue-400 hover:from-purple-500 hover:to-blue-500 flex items-center justify-center text-lg font-bold text-white shadow transition-all duration-200 hover:shadow-lg transform hover:scale-105 cursor-pointer overflow-hidden"
-            aria-label="RAY Support Bot"
-          >
-            <span className="absolute transition-opacity duration-200 opacity-100 group-hover:opacity-0">
-              <Bot className="w-8 h-8" />
-            </span>
-            <span className="absolute transition-opacity duration-500 opacity-0 group-hover:opacity-100">
-              RAY
-            </span>
-          </button>
-          <p className="text-sm text-gray-600 mt-1 dark:text-slate-400">Support</p>
-        </div>
-      </aside>
-
+      <RightSidebar />
       {/* --- Modals --- */}
       <RequestUpdate
         isOpen={isRequestUpdateOpen}

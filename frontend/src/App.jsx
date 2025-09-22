@@ -8,10 +8,11 @@ import Ray from "./layouts/Ray";
 import WorkletsPage from "./components/WorkletsPage";
 import WorkletDetailPage from './components/WorkletDetailsPage';
 import Login from "./components/login";
+import StatisticsDashboard from "./layouts/Statistics";
 
 // The single source of truth for user data
 const initialUserData = {
-  avatarUrl: null, // ++ Set to null to show initials-based avatar by default
+  avatarUrl: null,
   name: 'Mary Christian',
   handle: '@mary_prism',
   bio: 'PRISM / Tech Strategy, Software Developer. Turning ideas into impact.',
@@ -19,7 +20,6 @@ const initialUserData = {
   dob: '1992-11-24',
   location: 'Bengaluru, India',
   website: 'https://mary.dev',
-  // -- The gender field is no longer needed for the new avatar system
 };
 
 export default function App() {
@@ -33,7 +33,10 @@ export default function App() {
 
         {/* Pass userData down to the Dashboard */}
         <Route path="/home" element={<Dashboard userData={userData} />} />
-      
+
+        {/* CORRECTED ROUTE: The path is now a clean URL, not a file path. */}
+        <Route path="/statistics" element={<StatisticsDashboard />} />
+        
         {/* Pass both userData and the function to update it to the UserProfile */}
         <Route path="/profile" element={<UserProfile userData={userData} onProfileUpdate={setUserData} />} />
 
@@ -42,6 +45,7 @@ export default function App() {
         <Route path="/ray" element={<Ray />} />
         <Route path="/worklets" element={<WorkletsPage />} />
         <Route path="/worklet/:id" element={<WorkletDetailPage />} />
+        
         {/* Pass userData to other instances of Dashboard if they exist */}
         <Route path="/share-suggestion" element={<Dashboard userData={userData} />} />
         <Route path="/internship-referral" element={<Dashboard userData={userData} />} />

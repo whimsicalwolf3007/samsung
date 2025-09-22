@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import samsungLogo from "../assets/prism_logo.png";
-import RequestUpdate from "../layouts/Requestupdates";
-import SuggestionModal from "../layouts/SuggestionModal";
-import InternReferralForm from "../layouts/Intern";
-import FeedBack from "../layouts/FeedBack";
 import ThemeToggleButton from '../components/ThemeToggleButton';
 import Statistics from "../layouts/Statistics";
-import EvaluateModal from "../components/EvaluateModal";
+import {SAMPLE_WORKLETS} from "../components/data";
+
 
 import {
   Home, BarChart, GraduationCap, MessageSquare, Bell, Calendar, Folder,
@@ -19,6 +16,8 @@ import SidebarItem from "../components/SidebarItem";
 import LevelBadge from "../components/LevelBadge";
 import StatCard from "../components/StatCard";
 import ActivityButton from "../components/ActivityButton";
+import LeftSidebar from "../components/Left";
+import RightSidebar from "../components/Right";
 
 const LEVEL_COUNTS = { spark: 5, lead: 10, core: 15, master: 30 };
 const STATS = { worklets: 7, mentees: 35, badges: 2 };
@@ -50,119 +49,10 @@ const generateColorFromName = (name) => {
 // ++ 1. Accept 'userData' as a prop
 export default function Dashboard({ userData }) {
   const navigate = useNavigate();
-  const [isRequestUpdateOpen, setIsRequestUpdateOpen] = useState(false);
-  const [isSuggestionModalOpen, setIsSuggestionModalOpen] = useState(false);
-  const [isInternModalOpen, setIsInternModalOpen] = useState(false);
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [currentUserLevel, setCurrentUserLevel] = useState(1);
   const [layout, setLayout] = useState('grid');
-  const [isEvaluateModalOpen, setISEvaluateModalOpen] = useState(false);
 
-  const workletsData = [
-    {
-      id: 1,
-      title: "25TST04WT",
-      status: "Ongoing",
-      progress: 60,
-      description: "AI-driven sentiment analysis for customer feedback.",
-      imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=400&auto=format&fit=crop",
-      startDate: "Aug 1, 2025",
-      endDate: "Dec 15, 2025",
-      students: ["Alice Johnson", "Bob Williams", "Charlie Brown"],
-      notificationCount: 3,
-      quality: "Excellence",
-    },
-    {
-      id: 2,
-      title: "25TST05SRM",
-      status: "Ongoing",
-      progress: 70,
-      description: "Cross-platform mobile app for internal comms.",
-      imageUrl: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=400&auto=format&fit=crop",
-      startDate: "Sep 1, 2025",
-      endDate: "Jan 30, 2026",
-      students: ["Diana Prince", "Clark Kent"],
-      notificationCount: 0,
-      quality: "Good",
-    },
-    {
-      id: 3,
-      title: "24ARC01RV",
-      status: "Ongoing",
-      progress: 95,
-      description: "Cloud infrastructure migration to AWS with CI/CD.",
-      imageUrl: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=400&auto=format&fit=crop",
-      startDate: "Jul 15, 2025",
-      endDate: "Oct 20, 2025",
-      students: ["Bruce Wayne", "Peter Parker", "Tony Stark", "Steve Rogers", "Natasha Romanoff", "Thor Odinson", "Wanda Maximoff"],
-      notificationCount: 1,
-      quality: "Excellence",
-    },
-    {
-      id: 4,
-      title: "25DES02XI",
-      status: "Ongoing",
-      progress: 25,
-      description: "UI/UX redesign for the main customer portal.",
-      imageUrl: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=400&auto=format&fit=crop",
-      startDate: "Aug 20, 2025",
-      endDate: "Nov 10, 2025",
-      students: ["Carol Danvers", "Hope van Dyne"],
-      notificationCount: 5,
-      quality: "Needs Attention",
-    },
-    {
-      id: 5,
-      title: "25SEC03LP",
-      status: "Ongoing",
-      progress: 40,
-      description: "End-to-end encryption for messaging service.",
-      imageUrl: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=400&auto=format&fit=crop",
-      startDate: "Sep 10, 2025",
-      endDate: "Feb 1, 2026",
-      students: ["Vision", "Scott Lang", "Sam Wilson"],
-      notificationCount: 0,
-      quality: "Good",
-    },
-    {
-      id: 6,
-      title: "25DAT06MU",
-      status: "Ongoing",
-      progress: 85,
-      description: "Data warehousing solution for sales analytics.",
-      imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop",
-      startDate: "Jun 5, 2025",
-      endDate: "Sep 30, 2025",
-      students: ["Loki Laufeyson", "Bucky Barnes"],
-      notificationCount: 2,
-      quality: "Good",
-    },
-  ];
-
-  const handleNavigation = (path) => {
-    if (path === "/request-update") {
-      setIsRequestUpdateOpen(true);
-    } else if (path === "/share-suggestion") {
-      setIsSuggestionModalOpen(true);
-    } else if (path === "/internship-referral") {
-      setIsInternModalOpen(true);
-    }
-    else if (path === "/evaluate") {
-      setISEvaluateModalOpen(true);
-    }
-    else {
-      try {
-        console.log('Navigating to:', path);
-        navigate(path);
-      } catch (error) {
-        console.error('Navigation error:', error);
-      }
-    }
-  };
-
-  const handleSidebarNavigation = (path) => {
-    handleNavigation(path);
-  };
+  const workletsData = SAMPLE_WORKLETS.filter(w => w.status === 'Ongoing');
 
   const LevelMilestone = ({ level, index }) => {
     const levelsToGo = index - currentUserLevel;
@@ -191,20 +81,9 @@ export default function Dashboard({ userData }) {
   const progressPercentage = (currentUserLevel / (levels.length - 1)) * 100;
 
   return (
-    <div className={`flex h-screen w-full bg-slate-50 text-gray-800 overflow-hidden dark:bg-slate-900 dark:text-slate-200 ${(isRequestUpdateOpen || isSuggestionModalOpen || isInternModalOpen || isFeedbackOpen) ? 'overflow-hidden' : ''}`}>
+    <div className={`flex h-screen w-full bg-slate-50 text-gray-800 overflow-hidden dark:bg-slate-900 dark:text-slate-200 `}>
       {/* Left Sidebar */}
-      <aside className="w-30 lg:w-30 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black flex flex-col py-2 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <nav className="flex flex-col gap-6 items-center lg:items-center">
-          <SidebarItem icon={<Home className="w-5 h-5" />} label="Home" onClick={() => handleSidebarNavigation("/home")} />
-          <SidebarItem icon={<BarChart className="w-5 h-5" />} label="Statistics" onClick={() => handleSidebarNavigation("/statistics")} />
-          <SidebarItem icon={<GraduationCap className="w-5 h-5" />} label="Colleges" onClick={() => handleSidebarNavigation("/colleges")} />
-          <SidebarItem icon={<MessageSquare className="w-5 h-5" />} label="Chats" onClick={() => handleSidebarNavigation("/chats")} />
-          <SidebarItem icon={<Bell className="w-5 h-5" />} label="Updates" onClick={() => handleSidebarNavigation("/updates")} />
-          <SidebarItem icon={<Calendar className="w-5 h-5" />} label="Meetings" onClick={() => handleSidebarNavigation("/meetings")} />
-          <SidebarItem icon={<Folder className="w-5 h-5" />} label="Portfolio" onClick={() => handleSidebarNavigation("/portfolio")} />
-          <SidebarItem icon={<MessageCircle className="w-5 h-5" />} label="Feedbacks" onClick={() => handleSidebarNavigation("/feedbacks")} />
-        </nav>
-      </aside>
+      <LeftSidebar />
 
       {/* Main Content */}
       <main className="flex-1 px-8 py-6 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -303,7 +182,7 @@ export default function Dashboard({ userData }) {
           <div className="transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
             <div
               className="transform transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
-              onClick={() => handleNavigation('/worklets')}>
+              onClick={() => navigate('/worklets')}>
               <StatCard
                 value={STATS.worklets}
                 label="Worklets"
@@ -358,98 +237,7 @@ export default function Dashboard({ userData }) {
       </main>
 
       {/* Right Sidebar */}
-      <aside className="w-64 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black shadow-lg px-4 py-6 flex flex-col justify-between overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div>
-          <button
-            className="w-full bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded-xl py-2 mb-4 flex items-center justify-center gap-2 text-xl dark:bg-blue-900/50 dark:hover:bg-blue-800/60 dark:text-blue-200"
-            onClick={() => handleNavigation("/new-worklet")}
-          >
-            <PlusCircle className="w-5 h-10" /> <span className="text-2xl">New Worklet</span>
-          </button>
-          <h2 className="text-2xl font-bold mb-4 text-blue-900 dark:text-white">Activities</h2>
-          <ActivityButton
-            icon={<RefreshCcw className="w-5 h-10 text-blue-600" />}
-            label={<span className="text-lg font-semibold">Request Update</span>}
-            onClick={() => handleNavigation("/request-update")}
-          />
-          <ActivityButton
-            icon={<Lightbulb className="w-5 h-10 text-sky-500" />}
-            label={<span className="text-lg font-semibold">Share Suggestion</span>}
-            onClick={() => handleNavigation("/share-suggestion")}
-          />
-        
-          <ActivityButton
-            icon={<Briefcase className="w-5 h-10 text-purple-600" />}
-            label={<span className="text-lg font-semibold">Internship Referral</span>}
-            onClick={() => handleNavigation("/internship-referral")}
-          />
-          <ActivityButton
-            icon={<MessageSquare className="w-5 h-10 text-indigo-600" />}
-            label={<span className="text-lg font-semibold">Submit Feedback</span>}
-            onClick={() => setIsFeedbackOpen(true)}
-          />
-          {/* Added Evaluate button */}
-          <ActivityButton
-            icon={<ClipboardCheck className="w-5 h-10 text-green-600" />}
-            label={<span className="text-lg font-semibold">Evaluate</span>}
-            onClick={() => handleNavigation("/evaluate")}
-          />
-        </div>
-        <div className="text-center">
-          <button
-            onClick={() => handleNavigation("/ray")}
-            className="group relative mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-blue-400 
-                               hover:from-purple-500 hover:to-blue-500 flex items-center justify-center 
-                               text-lg font-bold text-white shadow transition-all duration-200 
-                               hover:shadow-lg transform hover:scale-105 cursor-pointer overflow-hidden"
-            aria-label="RAY Support Bot"
-          >
-            <span className="absolute transition-opacity duration-200 opacity-100 group-hover:opacity-0">
-              <Bot className="w-8 h-8" />
-            </span>
-            <span className="absolute transition-opacity duration-500 opacity-0 group-hover:opacity-100">
-              RAY
-            </span>
-          </button>
-          <p className="text-sm text-gray-600 mt-1 dark:text-slate-400">Support</p>
-        </div>
-      </aside>
-
-      {/* Modals */}
-      <RequestUpdate
-        isOpen={isRequestUpdateOpen}
-        onClose={() => setIsRequestUpdateOpen(false)}
-      />
-      <SuggestionModal
-        isOpen={isSuggestionModalOpen}
-        onClose={() => setIsSuggestionModalOpen(false)}
-      />
-      {isFeedbackOpen && (
-        <FeedBack onClose={() => setIsFeedbackOpen(false)} />
-      )}
-      {isInternModalOpen && (
-        <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-40 z-50 p-4 overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-white rounded-xl mt-10 mb-10 dark:bg-slate-900">
-            <div className=" top-0 right-0 flex justify-end bg-white rounded-t-xl p-2 dark:bg-slate-900">
-              <button
-                onClick={() => setIsInternModalOpen(false)}
-                className="text-3xl text-purple-700 hover:text-purple-900 font-bold z-10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-purple-100 transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <div className="p-4">
-              <InternReferralForm />
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Render the Evaluate */}
-      <EvaluateModal
-        isOpen={isEvaluateModalOpen}
-        onClose={() => setISEvaluateModalOpen(false)}
-        worklets={workletsData}
-      />
+      <RightSidebar />
     </div>
   );
 }

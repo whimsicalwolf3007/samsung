@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { STATUS_OPTIONS, SAMPLE_WORKLETS, statusIcons } from "../components/data";
 
 export default function RequestUpdate({ isOpen, onClose }) {
-  const [selectedWorklet, setSelectedWorklet] = useState("");
-  const workletIds = ["25TST04VIT", "25TST05SRM", "25TST", "11BMS"];
+const [selectedWorklet, setSelectedWorklet] = useState("");
+ const workletIds = SAMPLE_WORKLETS
+  .filter(worklet => worklet.status === 'Ongoing')
+  .map(worklet => worklet.title);
 
   if (!isOpen) return null;
 

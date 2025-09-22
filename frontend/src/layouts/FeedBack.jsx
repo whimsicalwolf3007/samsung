@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { STATUS_OPTIONS, SAMPLE_WORKLETS, statusIcons } from "../components/data";
 
 const Feedback = ({ onClose }) => {
   const [workletId, setWorkletId] = useState("25TST04VIT");
   const [month, setMonth] = useState("2");
   const [feedback, setFeedback] = useState("");
   const [connectType, setConnectType] = useState("");
+  const workletIds = SAMPLE_WORKLETS
+  .filter(worklet => worklet.status === 'Ongoing')
+  .map(worklet => worklet.title);
 
   const handleSubmit = () => {
     const data = {
@@ -40,14 +44,18 @@ const Feedback = ({ onClose }) => {
           {/* ++ Dark theme styles added to label ++ */}
           <label className="text-sm font-medium dark:text-slate-300">Select Worklet ID</label>
           <select
-            value={workletId}
-            onChange={(e) => setWorkletId(e.target.value)}
-            // ++ Dark theme styles added to select input ++
-            className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:focus:ring-blue-500"
-          >
-            <option value="25TST04VIT">25TST04VIT</option>
-            <option value="25ABC01XYZ">25ABC01XYZ</option>
-          </select>
+          // ++ Dark theme styles added to dropdown ++
+          className="w-full border rounded-lg p-2 mb-4 dark:bg-slate-700 dark:text-white dark:border-slate-600"
+          value={workletId}
+          onChange={(e) => setWorkletId(e.target.value)}
+        >
+          <option value="">-- Select --</option>
+          {workletIds.map((id) => (
+            <option key={id} value={id}>
+              {id}
+            </option>
+          ))}
+        </select>
         </div>
 
         {/* Month */}

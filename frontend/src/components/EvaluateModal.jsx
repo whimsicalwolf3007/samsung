@@ -1,27 +1,29 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import { SAMPLE_WORKLETS } from './data';
 
-// This is the new modal component for handling evaluations.
-function EvaluateModal({ isOpen, onClose, worklets }) {
-  // Don't render the modal if it's not open.
+function EvaluateModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
-  // Filter the workletsData array to find only those with a "Completed" status.
-  const completedWorklets = worklets.filter(w => w.status === 'Completed');
+  const completedWorklets = SAMPLE_WORKLETS.filter(w => w.status === 'Completed');
 
-  // Handle the form submission.
   const handleSubmit = (e) => {
     e.preventDefault();
     const selectedWorkletId = e.target.elements['worklet-select'].value;
+    
+    // Check if a valid worklet was selected
+    if (!selectedWorkletId) {
+        alert("Please select a worklet to evaluate.");
+        return;
+    }
+    
     alert(`Evaluation submitted for Worklet: ${selectedWorkletId}`);
-    onClose(); // Close the modal after submission.
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
-      {/* Modal Content */}
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6 relative">
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors"
@@ -33,7 +35,6 @@ function EvaluateModal({ isOpen, onClose, worklets }) {
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Evaluate Worklet</h2>
         
         <form onSubmit={handleSubmit}>
-          {/* Dropdown for Completed Worklets */}
           <div className="mb-6">
             <label htmlFor="worklet-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Select Completed Worklet
@@ -41,8 +42,12 @@ function EvaluateModal({ isOpen, onClose, worklets }) {
             <select
               id="worklet-select"
               name="worklet-select"
+              defaultValue="" // Set the default value to match the placeholder
               className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
             >
+              {/* THIS IS THE CHANGE: A disabled option for the placeholder */}
+              <option value="" disabled>Select Worklet ID</option>
+
               {completedWorklets.length > 0 ? (
                 completedWorklets.map(worklet => (
                   <option key={worklet.id} value={worklet.title}>
@@ -55,7 +60,6 @@ function EvaluateModal({ isOpen, onClose, worklets }) {
             </select>
           </div>
           
-          {/* Action Buttons */}
           <div className="flex justify-end gap-3">
             <button
               type="button"

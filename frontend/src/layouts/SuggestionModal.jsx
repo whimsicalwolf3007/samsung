@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-
+import { STATUS_OPTIONS, SAMPLE_WORKLETS, statusIcons } from "../components/data";
 export default function SuggestionModal({ isOpen, onClose }) {
   const [worklet, setWorklet] = useState("");
   const [suggestion, setSuggestion] = useState("");
+  const workletIds = SAMPLE_WORKLETS
+  .filter(worklet => worklet.status === 'Ongoing')
+  .map(worklet => worklet.title);
 
   const handleSubmit = () => {
     alert("Suggestion Shared ✅");
@@ -32,19 +35,19 @@ export default function SuggestionModal({ isOpen, onClose }) {
         <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-slate-300">
           Select Worklet ID
         </label>
-        <select
+         <select
+          // ++ Dark theme styles added to dropdown ++
+          className="w-full border rounded-lg p-2 mb-4 dark:bg-slate-700 dark:text-white dark:border-slate-600"
           value={worklet}
           onChange={(e) => setWorklet(e.target.value)}
-          // ++ Dark theme styles added to select input ++
-          className="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-700 dark:text-white dark:border-slate-600 dark:focus:ring-blue-500"
         >
           <option value="">-- Select --</option>
-          <option value="25TST05SRM">25TST05SRM</option>
-          <option value="25TST">25TST</option>
-          <option value="11BMS">11BMS</option>
-          <option value="25TST04VIT">25TST04VIT</option>
+          {workletIds.map((id) => (
+            <option key={id} value={id}>
+              {id}
+            </option>
+          ))}
         </select>
-
         {/* Text area */}
         <textarea
           value={suggestion}
